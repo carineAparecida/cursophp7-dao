@@ -58,8 +58,47 @@ class Usuario {
 			$this->setIdusuario($row['idusuario']);
 			$this->setDessenha($row['dessenha']);
 			$this->setDeslogin($row['deslogin']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+			//$this->setDtcadastro(new DateTime($row['dtcadastro']));
 		
+		}
+	}
+
+	public static function getList(){
+
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin;");
+	}
+
+	public static function search($login){
+
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+
+			':SEARCH'=>"%".$login."%"
+		));
+	}
+
+	public function login($login, $password){
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
+
+			":LOGIN"=>$login,
+			":PASSWORD"=>$password
+
+		));
+
+		if (count($results) > 0){
+
+			$row = $results[0];
+			$this->setIdusuario($row['idusuario']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDeslogin($row['deslogin']);
+			//$this->setDtcadastro(new DateTime($row['dtcadastro']));
+		
+		}else{
+
+			throw new Exception(" Login e/ou senha inválidos ");
 		}
 	}	
 
@@ -69,7 +108,7 @@ class Usuario {
 				"idusuario"=>$this->getIdusuario(),
 				"dessenha"=>$this->getDessenha(),
 				"deslogin"=>$this->getDeslogin(),
-				"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
+				//"dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
 			));
 		}
 	}
